@@ -476,41 +476,31 @@ double accuracy(vector<int> Y_true, int Y_pred[]){
 
 int main(int argc, char** agrv){
 	clock_t start, end;
-
+	const char *criteria_arr[2] = { "accuracy", "entropy"};
+	cout<<"prediction on real-world dataset : breast_cancer_data \n";
 	char delim = ' ';
-	readCSV("synthetic_dataset/X_train.txt", "X_train",delim);
-	readCSV("synthetic_dataset/X_test.txt","X_test",delim);
-	readCSV("synthetic_dataset/Y_train.txt","Y_train",delim);
-	readCSV("synthetic_dataset/Y_test.txt","Y_test",delim);
+	readCSV("breast_cancer_data/X_train.txt", "X_train",delim);
+	readCSV("breast_cancer_data/X_test.txt","X_test",delim);
+	readCSV("breast_cancer_data/Y_train.txt","Y_train",delim);
+	readCSV("breast_cancer_data/Y_test.txt","Y_test",delim);
 	int Y_train_pred[X_train.size()];
 	int Y_test_pred[X_test.size()];
 
-	int minNodeSize = 15;
+	int minNodeSize = 2;
 	int criteria = 2;
 	start=clock_t();
 	decisionTree model = decisionTree();
 	model.fit(X_train,Y_train,minNodeSize,criteria);
 	end=clock();
-	cout<<"model built | time : "<<(double(end - start) / double(CLOCKS_PER_SEC))<<" s "<<"| n_threads: "<<n_threads<<" criteria: "<<criteria<<endl;
 
+	cout<<"model built\n";
+	cout<<"time : "<<(double(end - start) / double(CLOCKS_PER_SEC))<<" s "<<"| n_threads: "<<n_threads<<" | criteria: "<<criteria_arr[criteria-1]<<endl;
 	model.predict(X_train,Y_train_pred);
 	model.predict(X_test,Y_test_pred);
-
 	cout<<"train acccuracy: "<<accuracy(Y_train,Y_train_pred)<<"%"<<endl;
 	cout<<"test acccuracy: "<<accuracy(Y_test,Y_test_pred)<<"%"<<endl;
 
-	// model.printDecisionTree();
-	// vector<vector<double>> X1_train={{1.0,2.0},{2.0,3.0},{3.0,2.0},{4.0,5.0},{5.0,6.0}};
-	// vector<int> Y1_train={1,-1,1,-1,-1};
-	// int Y1_pred[5];
-	// decisionTree model = decisionTree();
-	// model.fit(X1_train,Y1_train,1,2);
-	// model.predict(X1_train,Y1_pred);
-	// for(int i=0; i<5; i++){
-	// 	cout<<Y1_pred[i]<<", ";
-	// }
-	// cout<<endl;
-
+	// model.printDecisionTree(); //uses bfs-traversal to print the data
 
 	return 0;
 }
